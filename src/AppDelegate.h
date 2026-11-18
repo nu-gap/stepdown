@@ -19,6 +19,7 @@
 - (void)openDocument:(id)sender;
 - (void)saveDocument:(id)sender;
 - (void)saveDocumentAs:(id)sender;
+- (void)printDocument:(id)sender;
 - (BOOL)openDocumentAtPath:(NSString *)path;
 - (void)documentDidClose:(id)document;
 

@@ -625,6 +625,8 @@ static void StepDownAppendImage(NSMutableAttributedString *target, NSString *sou
         return;
     }
 
+    /* Each layout needs its own size; keep the cached original unchanged. */
+    image = [[image copy] autorelease];
     size = [image size];
     if (maxImageWidth > 0.0 && size.width > maxImageWidth && size.width > 0.0) {
         size.height = size.height * (maxImageWidth / size.width);

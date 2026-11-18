@@ -126,6 +126,8 @@
     [fileMenu addItemWithTitle:@"Open..." action:@selector(openDocument:) keyEquivalent:@"o"];
     [fileMenu addItemWithTitle:@"Save" action:@selector(saveDocument:) keyEquivalent:@"s"];
     [fileMenu addItemWithTitle:@"Save As..." action:@selector(saveDocumentAs:) keyEquivalent:@"S"];
+    [fileMenu addItem:[NSMenuItem separatorItem]];
+    [[fileMenu addItemWithTitle:@"Print..." action:@selector(printDocument:) keyEquivalent:@"p"] setTarget:self];
     [fileItem setSubmenu:fileMenu];
 
     editItem = [[[NSMenuItem alloc] initWithTitle:@"Edit" action:NULL keyEquivalent:@""] autorelease];
@@ -232,6 +234,19 @@
 - (void)documentDidClose:(id)document
 {
     [documents removeObject:document];
+}
+
+- (void)printDocument:(id)sender
+{
+    [[self activeDocument] printDocument:sender];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    if ([item action] == @selector(printDocument:)) {
+        return [self activeDocument] != nil;
+    }
+    return YES;
 }
 
 - (void)showError:(NSString *)message

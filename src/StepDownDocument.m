@@ -254,6 +254,50 @@ static NSString *StepDownInitialMarkdown(void)
     return YES;
 }
 
+- (void)printDocument:(id)sender
+{
+    NSPrintInfo *printInfo;
+    NSTextView *printView;
+    NSPrintOperation *operation;
+    NSAttributedString *rendered;
+    NSString *basePath;
+    CGFloat width;
+    CGFloat height;
+
+    printInfo = [[[NSPrintInfo sharedPrintInfo] copy] autorelease];
+    [printInfo setHorizontalPagination:NSFitPagination];
+    [printInfo setVerticalPagination:NSAutoPagination];
+    [printInfo setHorizontallyCentered:NO];
+    [printInfo setVerticallyCentered:NO];
+    width = [printInfo paperSize].width - [printInfo leftMargin] - [printInfo rightMargin];
+    width = MAX(width, 1.0);
+
+    /* Use a separate view so printing never changes the editor or preview. */
+    printView = [[[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, width, 1)] autorelease];
+    [printView setTextContainerInset:NSMakeSize(0, 0)];
+    [printView setHorizontallyResizable:NO];
+    [printView setVerticallyResizable:YES];
+    [printView setMaxSize:NSMakeSize(width, FLT_MAX)];
+    [[printView textContainer] setContainerSize:NSMakeSize(width, FLT_MAX)];
+    [[printView textContainer] setWidthTracksTextView:YES];
+    [printView setBackgroundColor:[NSColor whiteColor]];
+    [printView setEditable:NO];
+
+    basePath = currentPath != nil ? [currentPath stringByDeletingLastPathComponent]
+        : [[NSFileManager defaultManager] currentDirectoryPath];
+    rendered = [MarkdownRenderer attributedStringFromMarkdown:[editorView string]
+        baseURL:[NSURL fileURLWithPath:basePath]
+        maxImageWidth:MAX(width - 2.0 * [[printView textContainer] lineFragmentPadding], 1.0)];
+    [[printView textStorage] setAttributedString:rendered];
+    [[printView layoutManager] ensureLayoutForTextContainer:[printView textContainer]];
+    height = NSMaxY([[printView layoutManager] usedRectForTextContainer:[printView textContainer]]);
+    [printView setFrameSize:NSMakeSize(width, MAX(height, 1.0))];
+
+    operation = [NSPrintOperation printOperationWithView:printView printInfo:printInfo];
+    [operation setJobTitle:currentPath != nil ? [currentPath lastPathComponent] : @"Untitled"];
+    [operation runOperation];
+}
+
 - (BOOL)canCloseDocument
 {
     NSAlert *alert;

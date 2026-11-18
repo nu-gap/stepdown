@@ -24,6 +24,7 @@
 - (BOOL)isKeyDocument;
 - (BOOL)saveDocument:(id)sender;
 - (BOOL)saveDocumentAs:(id)sender;
+- (void)printDocument:(id)sender;
 - (BOOL)canCloseDocument;
 - (NSString *)currentPath;
 

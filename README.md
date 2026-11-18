@@ -17,6 +17,8 @@ using WebKit (or the libs-webkitcef).
 
 - Create, edit, open, and save multiple Markdown files at once.
 - Live rendered preview using `NSAttributedString`.
+- Print rendered Markdown with File → Print (Cmd+P on macOS), using the native
+  print dialog and automatic pagination, including unsaved edits.
 - Basic Markdown support: headings, bullets, numbered lists, block quotes,
   code blocks, horizontal rules, links, inline code, bold, and italic text.
 - Programmatic AppKit UI, with no nib or storyboard dependency.
